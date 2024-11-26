@@ -1,14 +1,5 @@
-let USERS = [
-  {
-    id: '1',
-    name: 'Vishal Vijay Babar',
-    email: 'vishal@gmail.com',
-    password: '123',
-    age: 25,
-    imageURL: 'https://reqres.in/img/faces/1-image.jpg'
-  }
-]
-let idCounter = 2
+let USERS = []
+let idCounter = 1
 
 const getAll = () => {
   return USERS

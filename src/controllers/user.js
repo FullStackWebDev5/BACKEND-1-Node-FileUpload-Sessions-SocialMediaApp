@@ -18,8 +18,9 @@ const fetchUsers = (req, res) => {
 }
 
 const signupUser = (req, res) => {
-  const { name, email, password, age, imageURL } = req.body
-  const newUser = { name, email, password, age, imageURL }
+  const { name, email, password, age } = req.body
+  const { file } = req
+  const newUser = { name, email, password, age, imageURL: `/uploads/${file.originalname}` }
   userModel.add(newUser)
   res.render('profile', newUser)
 }
