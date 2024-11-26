@@ -8,7 +8,7 @@ let USERS = [
     imageURL: 'https://reqres.in/img/faces/1-image.jpg'
   }
 ]
-const idCounter = 2
+let idCounter = 2
 
 const getAll = () => {
   return USERS
@@ -35,7 +35,7 @@ const remove = (id) => {
 }
 
 const checkUserExists = (email, password) => {
-  return USERS.find(user = user.email == email && user.password == password)
+  return USERS.find(user => user.email == email && user.password == password)
 }
 
 module.exports = {

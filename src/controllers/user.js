@@ -9,7 +9,7 @@ const displaySignupPage = (req, res) => {
 }
 
 const displayLoginPage = (req, res) => {
-  res.render('login')
+  res.render('login', { errMsg: '' })
 }
 
 const fetchUsers = (req, res) => {
@@ -21,13 +21,17 @@ const signupUser = (req, res) => {
   const { name, email, password, age, imageURL } = req.body
   const newUser = { name, email, password, age, imageURL }
   userModel.add(newUser)
-  res.redirect('/profile')
+  res.render('profile', newUser)
 }
 
 const loginUser = (req, res) => {
   const { email, password } = req.body
   const user = userModel.checkUserExists(email, password)
-  res.redirect('/profile')
+
+  if(!user) {
+    res.render('login', { errMsg: 'Invalid credentials' })
+  }
+  res.render('profile', user)
 }
 
 module.exports = {

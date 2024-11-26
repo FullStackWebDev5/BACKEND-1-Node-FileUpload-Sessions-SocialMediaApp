@@ -6,6 +6,7 @@ const userControllers = require('./src/controllers/user')
 const app = express()
 app.use(bodyParser.urlencoded())
 app.use(bodyParser.json())
+app.use(express.static('public'))
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/src/views')

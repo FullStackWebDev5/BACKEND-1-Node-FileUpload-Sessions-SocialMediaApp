@@ -1,0 +1,21 @@
+.custom-form {
+  width: 500px;
+  margin: 10px auto;
+}
+
+.custom-card {
+  width: 18rem;
+  margin: 10px auto;
+  padding: 10px;
+  text-align: center;
+}
+
+.custom-card img {
+  border-radius: 50%;
+}
+
+.avatar-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
