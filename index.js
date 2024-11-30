@@ -17,7 +17,7 @@ app.use(session({
   secret: process.env.EXPRESS_SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 60 * 1000 }
+  cookie: { maxAge: 60 * 60 * 1000 }
 }))
 app.use(cookieParser())
 
