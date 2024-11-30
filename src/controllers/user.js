@@ -1,7 +1,10 @@
 const userModel = require('../models/user')
 
 const displayProfilePage = (req, res) => {
-  res.render('profile')
+  if(!req.session.user) {
+    return res.redirect('/login')
+  }
+  res.render('profile', req.session.user)
 }
 
 const displaySignupPage = (req, res) => {
@@ -10,6 +13,13 @@ const displaySignupPage = (req, res) => {
 
 const displayLoginPage = (req, res) => {
   res.render('login', { errMsg: '' })
+}
+
+const displayDashboard = (req, res) => {
+  if(!req.session.user) {
+    return res.redirect('/login')
+  }
+  res.send('Welcome to Dashboard')
 }
 
 const fetchUsers = (req, res) => {
@@ -22,7 +32,8 @@ const signupUser = (req, res) => {
   const { file } = req
   const newUser = { name, email, password, age, imageURL: `/uploads/${file.originalname}` }
   userModel.add(newUser)
-  res.render('profile', newUser)
+  req.session.user = newUser
+  res.redirect('/profile')
 }
 
 const loginUser = (req, res) => {
@@ -32,11 +43,14 @@ const loginUser = (req, res) => {
   if(!user) {
     res.render('login', { errMsg: 'Invalid credentials' })
   }
-  res.render('profile', user)
+
+  req.session.user = user
+  res.redirect('/profile')
 }
 
 module.exports = {
   displayProfilePage,
+  displayDashboard,
   displaySignupPage,
   displayLoginPage,
   fetchUsers,

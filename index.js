@@ -1,6 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const ejs = require('ejs')
+const session = require('express-session')
+const dotenv = require('dotenv')
+dotenv.config()
 const upload = require('./src/middlewares/multer')
 const userControllers = require('./src/controllers/user')
 
@@ -9,6 +12,12 @@ const app = express()
 app.use(bodyParser.urlencoded())
 app.use(bodyParser.json())
 app.use(express.static('public'))
+app.use(session({
+  secret: process.env.EXPRESS_SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 60 * 1000 }
+}))
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/src/views')
@@ -20,6 +29,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/profile', userControllers.displayProfilePage)
+app.get('/dashboard', userControllers.displayDashboard)
 app.get('/signup', userControllers.displaySignupPage)
 app.get('/login', userControllers.displayLoginPage)
 
@@ -93,9 +103,32 @@ app.listen(3000, () => {
             res.send('Files uploaded successfully!')
           })
 
+  # Sessions and Cookies
+    - Sessions: 
+      - A mechanism in which server uniquely identifies a client
+      - A unique session ID is returned to the client the very first time a request is made
+      - Illustration: https://miro.medium.com/v2/resize:fit:1400/1*-D6Ids2z9ebtz0_m9qeBBA.png
+      - 'express-session' package
+        - Configure session middleware
+        - This will add 'session' key to req object
+        - Cookie name by default: 'connect.sid'
+    - Cookies:
+      - Cookies are small pieces of data stored on the client's browser
+
+    - Code:
+      app.get('/learn-sessions', (req, res) => {
+        if(!req.session.counter) {
+          req.session.counter = 1
+        } else {
+          req.session.counter++
+        }
+        res.send(`<h1>You accessed this webpage ${req.session.counter} times</h1>`)
+      })
+
   # Resources:
     - multipart/form-data: https://varaprasadh.medium.com/what-the-heck-is-multipart-form-data-8df091d598b5
     - multer: https://www.npmjs.com/package/multer
+    - express-session: https://www.npmjs.com/package/express-session
 
 
 
