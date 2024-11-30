@@ -32,7 +32,16 @@ const signupUser = (req, res) => {
   const { file } = req
   const newUser = { name, email, password, age, imageURL: `/uploads/${file.originalname}` }
   userModel.add(newUser)
-  req.session.user = newUser
+
+  let lastLoggedInAt = null
+  if(req.cookies.lastLoggedInAt) {
+    lastLoggedInAt = req.cookies.lastLoggedInAt
+  } else {
+    lastLoggedInAt = new Date().toLocaleString()
+  }
+  req.session.user = { ...newUser, lastLoggedInAt }
+  let currentTime = new Date().toLocaleString()
+  res.cookie('lastLoggedInAt', currentTime, { maxAge: 3 * 24 * 60 * 60 * 1000 })
   res.redirect('/profile')
 }
 
@@ -44,8 +53,26 @@ const loginUser = (req, res) => {
     res.render('login', { errMsg: 'Invalid credentials' })
   }
 
-  req.session.user = user
+  let lastLoggedInAt = null
+  if(req.cookies.lastLoggedInAt) {
+    lastLoggedInAt = req.cookies.lastLoggedInAt
+  } else {
+    lastLoggedInAt = new Date().toLocaleString()
+  }
+  req.session.user = { ...user, lastLoggedInAt }
+  let currentTime = new Date().toLocaleString()
+  res.cookie('lastLoggedInAt', currentTime, { maxAge: 3 * 24 * 60 * 60 * 1000 })
   res.redirect('/profile')
+}
+
+const logoutUser = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.redirect('/login');
+    }
+  });
 }
 
 module.exports = {
@@ -55,5 +82,6 @@ module.exports = {
   displayLoginPage,
   fetchUsers,
   signupUser,
-  loginUser
+  loginUser,
+  logoutUser
 }

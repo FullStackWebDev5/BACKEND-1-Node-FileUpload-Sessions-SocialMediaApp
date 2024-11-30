@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const ejs = require('ejs')
 const session = require('express-session')
+const cookieParser = require('cookie-parser')
 const dotenv = require('dotenv')
 dotenv.config()
 const upload = require('./src/middlewares/multer')
@@ -18,6 +19,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: { maxAge: 60 * 1000 }
 }))
+app.use(cookieParser())
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/src/views')
@@ -36,6 +38,7 @@ app.get('/login', userControllers.displayLoginPage)
 app.get('/api/users', userControllers.fetchUsers)
 app.post('/api/signup', upload.single('profileimagefile'), userControllers.signupUser)
 app.post('/api/login', userControllers.loginUser)
+app.get('/api/logout', userControllers.logoutUser)
 
 app.listen(3000, () => {
   console.log('Server is up :)')
@@ -110,10 +113,14 @@ app.listen(3000, () => {
       - Illustration: https://miro.medium.com/v2/resize:fit:1400/1*-D6Ids2z9ebtz0_m9qeBBA.png
       - 'express-session' package
         - Configure session middleware
-        - This will add 'session' key to req object
+        - This will add 'session' key to req object, can be accessed as req.session
         - Cookie name by default: 'connect.sid'
     - Cookies:
       - Cookies are small pieces of data stored on the client's browser
+      - To access a cookie: req.cookies
+      - To set custom cookie: res.cookie('key', 'value', { maxAge: '' })
+      - 'cookie-parser' package
+        - Add cookies to req.cookies
 
     - Code:
       app.get('/learn-sessions', (req, res) => {
@@ -129,7 +136,6 @@ app.listen(3000, () => {
     - multipart/form-data: https://varaprasadh.medium.com/what-the-heck-is-multipart-form-data-8df091d598b5
     - multer: https://www.npmjs.com/package/multer
     - express-session: https://www.npmjs.com/package/express-session
-
-
+    - cookie-parser: https://www.npmjs.com/package/cookie-parser
 
 */
