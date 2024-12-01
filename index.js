@@ -6,7 +6,9 @@ const cookieParser = require('cookie-parser')
 const dotenv = require('dotenv')
 dotenv.config()
 const upload = require('./src/middlewares/multer')
+const { isLoggedIn } = require('./src/middlewares/user')
 const userControllers = require('./src/controllers/user')
+const interestController = require('./src/controllers/interest')
 
 const app = express()
 
@@ -30,15 +32,29 @@ app.get('/', (req, res) => {
   })
 })
 
-app.get('/profile', userControllers.displayProfilePage)
-app.get('/dashboard', userControllers.displayDashboard)
+app.get('/profile', isLoggedIn, userControllers.displayProfilePage)
+app.get('/dashboard', isLoggedIn, userControllers.displayDashboard)
 app.get('/signup', userControllers.displaySignupPage)
 app.get('/login', userControllers.displayLoginPage)
 
-app.get('/api/users', userControllers.fetchUsers)
+app.get('/api/users', isLoggedIn, userControllers.fetchUsers)
 app.post('/api/signup', upload.single('profileimagefile'), userControllers.signupUser)
 app.post('/api/login', userControllers.loginUser)
 app.get('/api/logout', userControllers.logoutUser)
+
+app.get('/interests', isLoggedIn, interestController.displayInterestPage)
+app.get('/api/interests', isLoggedIn, interestController.fetchInterests)
+app.post('/api/interests', isLoggedIn, interestController.createInterest)
+
+app.get('/api/users/:id/interests', interestController.fetchUserInterests)
+app.post('/api/users/:id/interests', interestController.createUserInterest)
+
+app.get('/404', (req, res) => {
+  res.send(`This page doesn't exist`)
+})
+app.get('*', (req, res) => {
+  res.redirect('/404')
+})
 
 app.listen(3000, () => {
   console.log('Server is up :)')

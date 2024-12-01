@@ -1,10 +1,8 @@
 const userModel = require('../models/user')
 
 const displayProfilePage = (req, res) => {
-  if(!req.session.user) {
-    return res.redirect('/login')
-  }
-  res.render('profile', req.session.user)
+  const interests = userModel.getInterests(req.session.user.id)
+  res.render('profile', { ...req.session.user, interests } )
 }
 
 const displaySignupPage = (req, res) => {
@@ -16,9 +14,6 @@ const displayLoginPage = (req, res) => {
 }
 
 const displayDashboard = (req, res) => {
-  if(!req.session.user) {
-    return res.redirect('/login')
-  }
   res.send('Welcome to Dashboard')
 }
 
@@ -31,7 +26,7 @@ const signupUser = (req, res) => {
   const { name, email, password, age } = req.body
   const { file } = req
   const newUser = { name, email, password, age, imageURL: `/uploads/${file.originalname}` }
-  userModel.add(newUser)
+  const user = userModel.add(newUser)
 
   let lastLoggedInAt = null
   if(req.cookies.lastLoggedInAt) {
@@ -39,7 +34,7 @@ const signupUser = (req, res) => {
   } else {
     lastLoggedInAt = new Date().toLocaleString()
   }
-  req.session.user = { ...newUser, lastLoggedInAt }
+  req.session.user = { ...user, lastLoggedInAt }
   let currentTime = new Date().toLocaleString()
   res.cookie('lastLoggedInAt', currentTime, { maxAge: 3 * 24 * 60 * 60 * 1000 })
   res.redirect('/profile')
@@ -50,7 +45,7 @@ const loginUser = (req, res) => {
   const user = userModel.checkUserExists(email, password)
 
   if(!user) {
-    res.render('login', { errMsg: 'Invalid credentials' })
+    return res.render('login', { errMsg: 'Invalid credentials' })
   }
 
   let lastLoggedInAt = null

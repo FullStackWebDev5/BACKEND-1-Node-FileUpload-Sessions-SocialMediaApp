@@ -22,6 +22,9 @@
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="/contact">Contact Us</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/interests">Interests</a>
+          </li>
         </ul>
         <ul class="navbar-nav my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
           <li class="nav-item">
@@ -48,6 +51,12 @@
         <h5 class="card-title"><%= name %></h5>
         <p class="card-text">Email: <%= email %></p>
         <p class="card-text">Age: <%= age %></p>
+        <hr>
+        <ul style="text-align: left;">
+          <% interests.forEach((interest) => { %>
+            <li><%= interest.name %></li>
+          <% }) %>
+        </ul>
       </div>
     </div>
   </div>
